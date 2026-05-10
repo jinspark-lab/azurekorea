@@ -60,10 +60,12 @@ featured: true
 
 ## 1. GHAS 기능별 역할과 설명
 ---
+
 |제품명|포함 기능|설명|
 |---|---|---|
 |**GitHub Code Security**|Code Scanning (CodeQL), Copilot Autofix, Security Campaigns, Premium Dependabot 기능, Dependency Review | 취약점 탐지·수정 중심 (SAST + SCA)
 |GitHub Secret Protection|Secret Scanning, Push Protection, AI 기반 비밀 탐지, Custom Patterns 등 |코드 안의 비밀(토큰/키) 누출 탐지·방지 중심|
+
 ---
 
 이 문서에서는 **GitHub Code Security** 영역을 다루며, 특히 **Code Scanning (CodeQL)** 과 **Dependabot** 기능에 집중하여 설명합니다. Secret Protection 관련 내용은 다음에 포스팅할, 별도의 문서에서 다루도록 하겠습니다.
@@ -298,47 +300,29 @@ PR에 대해 Dependabot Alert가 해결되지 않으면 merge 불가 설정. 이
 
 ```mermaid
 flowchart TD
-    DEV["👨‍💻 **Developer**
-    • 코드 작성
-    • 라이브러리 추가
-    • API Key 설정"]
+    DEV["👨‍💻 **Developer**<br/>• 코드 작성<br/>• 라이브러리 추가<br/>• API Key 설정"]
 
     REPO["🗄️ **GitHub Repository** (Private)"]
 
-    SP["🔐 **Secret Protection**
-    • Push Protection
-    • Secret Scanning
-    • Partner Validation"]
+    SP["🔐 **Secret Protection**<br/>• Push Protection<br/>• Secret Scanning<br/>• Partner Validation"]
 
-    DEC{{"Secret 포함됨?"}}
+    DEC{"Secret 포함됨?"}
 
-    BLOCK["🚫 푸시 차단
-    → 개발자 수정"]
+    BLOCK["🚫 푸시 차단<br/>→ 개발자 수정"]
 
     MERGED["✅ 저장소 반영"]
 
     PR["📋 **Pull Request 생성**"]
 
-    CODEQL["🔍 **CodeQL
-    (Code Scanning)**
-    • SAST 분석
-    • Injection, XSS, SSRF
-    • 취약 코드 패턴 탐지
-    • custom 쿼리 적용 가능"]
+    CODEQL["🔍 **CodeQL<br/>(Code Scanning)**<br/>• SAST 분석<br/>• Injection, XSS, SSRF<br/>• 취약 코드 패턴 탐지<br/>• custom 쿼리 적용 가능"]
 
-    DEPENDABOT["📦 **Dependabot**
-    • CVE 탐지
-    • Dependency Review
-    • 취약 라이브러리 탐지"]
+    DEPENDABOT["📦 **Dependabot**<br/>• CVE 탐지<br/>• Dependency Review<br/>• 취약 라이브러리 탐지"]
 
-    ALERTS["🚨 **Security Alerts 생성**
-    (Security Tab)"]
+    ALERTS["🚨 **Security Alerts 생성**<br/>(Security Tab)"]
 
     MERGE["🎉 코드 수정 → PR 재검토 → **Merge**"]
 
-    Deploy["🚀 **Deploy**
-    • 배포 진행
-    • 모니터링 시작"]
+    Deploy["🚀 **Deploy**<br/>• 배포 진행<br/>• 모니터링 시작"]
 
     DEV -->|"git push / PR 생성"| REPO
     REPO --> SP
