@@ -2,7 +2,7 @@
 layout: post
 title:  "Agentic DevOps: AI 시대를 위한 에이전트 중심의 개발 문화"
 author: {alias}
-tag: [ Agentic DevOps, DevOps, AI, GitHub Copilot ]
+tag: [ Agentic DevOps, DevOps, AI, GitHub, GitHub Copilot ]
 category: [ Solution ]
 image: assets/images/thumbnails/{thumbnail_image_name}
 ---
