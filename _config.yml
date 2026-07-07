@@ -139,6 +139,12 @@ authors:
     avatar: 'assets/images/profiles/heeyang.jpg'
     email: t-heeyang@microsoft.com
     description: "Solution Engineer Intern"
+  jinsungpark:
+    name: jinsungpark
+    display_name: Jinsung Park
+    avatar: 'assets/images/profiles/jinsungpark.jpg'
+    email: jinsungpark@microsoft.com
+    description: "SR Software Solution Engineer"
 
 # Plugins
 plugins:
