@@ -1,10 +1,10 @@
 ---
 layout: post
 title:  "Agentic DevOps: AI 시대를 위한 에이전트 중심의 개발 문화"
-author: {alias}
+author: jinsungpark
 tag: [ Agentic DevOps, DevOps, AI, GitHub, GitHub Copilot ]
 category: [ Solution ]
-image: assets/images/thumbnails/{thumbnail_image_name}
+image: assets/images/thumnails/Agentic_DevOps_Icon.png
 ---
 
 ## AI 시대를 위한 개발 문화와 환경이란?
