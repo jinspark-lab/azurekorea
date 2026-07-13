@@ -145,6 +145,12 @@ authors:
     avatar: 'assets/images/profiles/jinsungpark.jpg'
     email: jinsungpark@microsoft.com
     description: "SR Software Solution Engineer"
+  haewonshin:
+    name: haewonshin
+    display_name: Haewon Shin
+    avatar: 'assets/images/profiles/haewonshin.jpg'
+    email: haewon.shin@microsoft.com
+    description: "SR AI APPS SOLUTION ENGINEER"
 
 # Plugins
 plugins:
