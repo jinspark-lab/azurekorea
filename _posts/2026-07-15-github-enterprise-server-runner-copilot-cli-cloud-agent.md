@@ -93,7 +93,7 @@ Runner 기반 구성에서 추가로 중요한 점은 환경변수를 어디에�
 > | `GH_TOKEN` | GitHub CLI(`gh`) 또는 GitHub API 호출 스크립트 | Runner에서 `gh` 명령어를 사용해 issue, PR, comment, release 같은 GitHub 작업을 수행할 때 사용합니다. 일반적으로 PAT 또는 GitHub App token을 주입합니다. Copilot CLI provider 인증과는 별개입니다. |
 > | `COPILOT_GITHUB_TOKEN` | Copilot CLI의 GitHub 서비스 인증 | GitHub.com 또는 GitHub Enterprise Cloud의 Copilot 서비스와 통신할 때 사용할 수 있는 GitHub 인증 토큰입니다. GHES 환경에서 Microsoft Foundry 모델을 `COPILOT_OFFLINE=true`로 직접 호출하는 구성에서는 핵심 provider 인증 토큰이 아닙니다. |
 >
-> 정리하면, `GITHUB_TOKEN`과 `GH_TOKEN`은 GHES 저장소나 PR에 접근하기 위한 GitHub API 토큰이고, `COPILOT_PROVIDER_API_KEY`와 `COPILOT_PROVIDER_BEARER_TOKEN`은 모델 엔드포인트를 호출하기 위한 provider 인증 정보입니다. `COPILOT_GITHUB_TOKEN` 변수는 GitHub Enterprise Cloud와 연동하는데 사용하는 변수이므로 제한된 네트워트 환경에서는 사용되지 않습니다.
+> 정리하면, `GITHUB_TOKEN`과 `GH_TOKEN`은 GHES 저장소나 PR에 접근하기 위한 GitHub API 토큰이고, `COPILOT_PROVIDER_API_KEY`와 `COPILOT_PROVIDER_BEARER_TOKEN`은 모델 엔드포인트를 호출하기 위한 provider 인증 정보입니다. `COPILOT_GITHUB_TOKEN` 변수는 GitHub Enterprise Cloud에서 GitHub Copilot 서비스 인증을 위해 사용하는 변수이고, 이 구성에서는 모델 Provider 인증을 사용하므로 해당 변수는 사용되지 않습니다.
 
 ## <img src="../assets/images/haewonshin/github.svg" alt="GitHub" width="28" height="28" style="vertical-align:-5px;margin-right:8px;">Workflow 예시
 
