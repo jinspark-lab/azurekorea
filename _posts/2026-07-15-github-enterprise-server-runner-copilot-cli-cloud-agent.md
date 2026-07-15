@@ -1,12 +1,23 @@
 ---
 layout: post
-title: "GitHub Enterprise Server Runner에서 Copilot CLI로 Cloud Agent 유사 환경 구성하기"
+title: "GitHub Enterprise Server에서 자율형 에이전트 구현"
 author: haewonshin
 tag: [ GitHub Enterprise Server, GitHub Actions, Self-hosted Runner, GitHub Copilot, Copilot CLI, Foundry Model]
 category: [ Solution ]
 image: assets/images/thumnails/GitHub_Copilot_CLI_Icon.png
 featured: true
 ---
+
+최근 금융권 등 폐쇄망 또는 제한된 네트워크 환경에서 AI 기반 코드 어시스턴트를 활용하고자 하는 니즈가 증가하고 있습니다. 특히 개발자가 기존 터미널과 IDE 환경을 유지하면서도, 조직이 통제하는 모델 엔드포인트와 네트워크 정책 안에서 코드 생성, 명령어 작성, 오류 분석을 수행할 수 있는 구성이 중요해지고 있습니다.
+
+본 포스팅은 제한된 네트워크 환경에서의 AI 개발 자동화 구성을 다루는 시리즈 중 하나입니다. 아래 시리즈 목차를 통해 각 글을 순서대로 확인할 수 있습니다.
+
+### 시리즈 목차
+
+1. [제한된 네트워크 환경에서 구성하는 AI 기반 개발환경](/ai-development-environment-in-priave-network/)
+2. [제한된 네트워크 환경에서 Agent와 Skill로 확장하는 AI 개발 자동화](/agentic-workflow-harness-engineering-with-copilot-agents-skills/)
+3. **GitHub Enterprise Server에서 자율형 에이전트 구현**
+
 
 GitHub Enterprise Server(GHES)를 사용하는 엔터프라이즈 환경에서는 GitHub.com의 managed cloud agent 기능을 그대로 사용할 수 없거나, 내부망 정책상 외부 managed execution 환경을 사용하기 어려운 경우가 많습니다. 이런 경우 GHES에 연결된 self-hosted runner에서 GitHub Copilot CLI를 실행하면, 완전한 cloud agent는 아니지만 이슈 분석, 코드 변경안 생성, 로그 요약, 배포 스크립트 점검과 같은 일부 agentic workflow를 내부 실행 환경에서 구성할 수 있습니다.
 

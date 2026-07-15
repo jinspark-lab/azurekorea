@@ -10,6 +10,14 @@ featured: true
 
 최근 금융권 등 폐쇄망 또는 제한된 네트워크 환경에서 AI 기반 코드 어시스턴트를 활용하고자 하는 니즈가 증가하고 있습니다. 특히 개발자가 기존 터미널과 IDE 환경을 유지하면서도, 조직이 통제하는 모델 엔드포인트와 네트워크 정책 안에서 코드 생성, 명령어 작성, 오류 분석을 수행할 수 있는 구성이 중요해지고 있습니다.
 
+본 포스팅은 제한된 네트워크 환경에서의 AI 개발 자동화 구성을 다루는 시리즈 중 하나입니다. 아래 시리즈 목차를 통해 각 글을 순서대로 확인할 수 있습니다.
+
+### 시리즈 목차
+
+1. **제한된 네트워크 환경에서 구성하는 AI 기반 개발환경**
+2. [제한된 네트워크 환경에서 Agent와 Skill로 확장하는 AI 개발 자동화](/agentic-workflow-harness-engineering-with-copilot-agents-skills/)
+3. [GitHub Enterprise Server에서 자율형 에이전트 구현](/github-enterprise-server-runner-copilot-cli-cloud-agent/)
+
 이 포스팅에서는 폐쇄망 환경에서 Microsoft Foundry Model을 GitHub Copilot CLI와 Codex CLI에서 호출하는 구성을 설명합니다. 또한 두 CLI 간 방식을 비교하여, 엔터프라이즈와 금융권 고객이 어떤 기준으로 CLI 기반 AI 개발 환경을 선택할 수 있는지 정리합니다.
 
 ## <img src="../assets/images/haewonshin/github.svg" alt="GitHub" width="28" height="28" style="vertical-align:-5px;margin-right:8px;">`copilot` 명령어로 제한된 네트워크 환경에서 개발 환경 구성
