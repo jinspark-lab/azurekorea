@@ -25,17 +25,17 @@ GitHub Enterprise Server(GHES)를 사용하는 엔터프라이즈 환경에서�
 
 ## <img src="../assets/images/haewonshin/github.svg" alt="GitHub" width="28" height="28" style="vertical-align:-5px;margin-right:8px;">구성 목표와 한계
 
-이 구성은 GitHub Copilot cloud agent와 동일한 제품 기능을 대체하는 것은 아니지만, 제한된 네트워크 구성 환경에서는 꽤 괜찮은 옵션이 될 수 있습니다. Cloud agent는 이슈 할당, 작업 계획, 코드 수정, PR 생성, 리뷰 반영 같은 과정을 managed service로 오케스트레이션합니다. 반면 GHES runner 기반 구성은 GitHub Actions workflow가 트리거되고, runner 내부에서 `copilot` 명령어를 실행한 뒤 결과를 artifact, job summary, PR comment, 또는 후속 스크립트로 연결하는 방식입니다.
+이 구성은 GitHub Copilot Cloud Agent와 동일한 제품 기능을 대체하는 것은 아니지만, 제한된 네트워크 구성 환경에서는 꽤 괜찮은 옵션이 될 수 있습니다. Cloud Agent는 이슈 할당, 작업 계획, 코드 수정, PR 생성, 리뷰 반영 같은 과정을 managed service로 오케스트레이션합니다. 반면 GHES runner 기반 구성은 GitHub Actions workflow가 트리거되고, runner 내부에서 `copilot` 명령어를 실행한 뒤 결과를 artifact, job summary, PR comment, 또는 후속 스크립트로 연결하는 방식입니다.
 
 따라서 이 구성은 다음과 같은 시나리오에 적합합니다.
 
-- GHES 환경에서 외부 cloud agent를 직접 사용할 수 없는 경우
+- GHES 환경에서 외부 Copilot Cloud Agent를 직접 사용할 수 없는 경우
 - 내부망 runner에서 코드와 로그를 분석해야 하는 경우
 - Microsoft Foundry 또는 Azure OpenAI 모델을 조직이 통제하는 엔드포인트로 호출해야 하는 경우
 - API Key 또는 Microsoft Entra ID Bearer Token 기반으로 모델 호출 인증을 제어해야 하는 경우
 - 사람의 승인 또는 PR 리뷰를 전제로 코드 변경 제안을 자동 생성하고 싶은 경우
 
-반대로, 이 방식만으로 cloud agent 수준의 완전한 자율 작업자 경험이 제공되는 것은 아닙니다. 작업 범위 정의, 변경 파일 검증, 커밋/PR 생성, 보안 검사, 승인 절차는 별도 workflow와 정책으로 설계해야 합니다.
+반대로, 이 방식만으로 Copilot Cloud Agent 수준의 완전한 자율 작업자 경험이 제공되는 것은 아닙니다. 작업 범위 정의, 변경 파일 검증, 커밋/PR 생성, 보안 검사, 승인 절차는 별도 workflow와 정책으로 설계해야 합니다.
 
 ## <img src="../assets/images/haewonshin/github.svg" alt="GitHub" width="28" height="28" style="vertical-align:-5px;margin-right:8px;">아키텍처 개요
 
@@ -78,7 +78,7 @@ Copilot CLI가 Microsoft Foundry 또는 Azure OpenAI 모델을 직접 호출하�
 
 Runner 기반 구성에서 추가로 중요한 점은 환경변수를 어디에서 주입하느냐입니다. 개발자 로컬 터미널에서는 `export`로 직접 설정할 수 있지만, GHES self-hosted runner에서는 다음 방식 중 하나를 사용해야 합니다.
 
-- GHES Actions secret으로 `COPILOT_PROVIDER_BASE_URL`, `COPILOT_MODEL`, `COPILOT_PROVIDER_API_KEY` 같은 값을 주입
+- GHES Actions secret으로 `COPILOT_PROVIDER_BASE_URL`, `COPILOT_MODEL`, `COPILOT_PROVIDER_API_KEY` 등의 값을 주입
 - runner host의 서비스 환경변수 또는 OS secret store에서 주입
 - Microsoft Entra ID Bearer Token을 사용할 경우 runner에서 비대화형 토큰 발급 흐름을 구성
 - 민감정보가 workflow 로그에 출력되지 않도록 secret masking과 artifact 보존 정책을 함께 설정
@@ -92,12 +92,12 @@ Runner 기반 구성에서 추가로 중요한 점은 환경변수를 어디에�
 > | `GITHUB_TOKEN` | GitHub Actions workflow | Workflow 실행 시 GitHub가 자동으로 발급하는 저장소 범위 토큰입니다. Checkout, artifact, PR comment, issue comment 등 GitHub API 작업에 사용합니다. Copilot CLI가 모델을 호출하기 위한 토큰은 아닙니다. |
 > | `GH_TOKEN` | GitHub CLI(`gh`) 또는 GitHub API 호출 스크립트 | Runner에서 `gh` 명령어를 사용해 issue, PR, comment, release 같은 GitHub 작업을 수행할 때 사용합니다. 일반적으로 PAT 또는 GitHub App token을 주입합니다. Copilot CLI provider 인증과는 별개입니다. |
 > | `COPILOT_GITHUB_TOKEN` | Copilot CLI의 GitHub 서비스 인증 | GitHub.com 또는 GitHub Enterprise Cloud의 Copilot 서비스와 통신할 때 사용할 수 있는 GitHub 인증 토큰입니다. GHES 환경에서 Microsoft Foundry 모델을 `COPILOT_OFFLINE=true`로 직접 호출하는 구성에서는 핵심 provider 인증 토큰이 아닙니다. |
-> | `COPILOT_PROVIDER_API_KEY` | Copilot CLI 모델 provider 인증 | Microsoft Foundry 또는 Azure OpenAI 모델을 API Key 기반 BYOK 방식으로 호출할 때 사용하는 토큰입니다. GitHub API 작업에는 사용하지 않습니다. |
-> | `COPILOT_PROVIDER_BEARER_TOKEN` | Copilot CLI 모델 provider 인증 | Microsoft Entra ID Bearer Token으로 Microsoft Foundry 또는 Azure OpenAI 모델을 호출할 때 사용하는 토큰입니다. GitHub API 작업에는 사용하지 않습니다. |
 >
-> 정리하면, `GITHUB_TOKEN`과 `GH_TOKEN`은 GHES 저장소나 PR에 접근하기 위한 GitHub API 토큰이고, `COPILOT_PROVIDER_API_KEY`와 `COPILOT_PROVIDER_BEARER_TOKEN`은 모델 엔드포인트를 호출하기 위한 provider 인증 정보입니다. 두 종류의 토큰을 같은 secret으로 재사용하지 않는 것이 좋습니다.
+> 정리하면, `GITHUB_TOKEN`과 `GH_TOKEN`은 GHES 저장소나 PR에 접근하기 위한 GitHub API 토큰이고, `COPILOT_PROVIDER_API_KEY`와 `COPILOT_PROVIDER_BEARER_TOKEN`은 모델 엔드포인트를 호출하기 위한 provider 인증 정보입니다. `COPILOT_GITHUB_TOKEN` 변수는 GitHub Enterprise Cloud와 연동하는데 사용하는 변수이므로 제한된 네트워트 환경에서는 사용되지 않습니다.
 
-## <img src="../assets/images/haewonshin/github.svg" alt="GitHub" width="28" height="28" style="vertical-align:-5px;margin-right:8px;">Workflow 예시: 코드 변경 영향 분석
+## <img src="../assets/images/haewonshin/github.svg" alt="GitHub" width="28" height="28" style="vertical-align:-5px;margin-right:8px;">Workflow 예시
+
+### 1) 코드 변경 영향 분석
 
 다음 예시는 PR 또는 수동 실행 시 self-hosted runner에서 Copilot CLI를 실행해 변경 영향 분석 결과를 생성하는 패턴입니다. 실제 GHES 버전과 Actions 설정에 따라 event, permission, secret 이름은 조정해야 합니다.
 
@@ -170,9 +170,9 @@ jobs:
 
 이 예시는 PR comment를 자동 작성하지 않고 job summary와 artifact에 결과를 남깁니다. 금융권이나 내부통제가 강한 환경에서는 모델 출력이 바로 PR에 반영되기보다, 사람이 검토한 뒤 comment나 코드 변경으로 연결하는 방식이 더 안전합니다.
 
-## <img src="../assets/images/haewonshin/github.svg" alt="GitHub" width="28" height="28" style="vertical-align:-5px;margin-right:8px;">Workflow 예시: Cloud Agent 유사 작업 단위 만들기
+### 2) Copilot Cloud Agent와 유사한 자율형 에이전트를 위한 작업 단위 생성
 
-Cloud agent와 유사한 경험을 만들려면 workflow를 작업 단위로 나누는 것이 좋습니다. 예를 들어 다음과 같은 workflow를 구성할 수 있습니다.
+자율형 에이전트용 workflow는 작업 단위로 분리하는 것이 좋습니다. 예를 들어 다음과 같은 workflow를 구성할 수 있습니다.
 
 | 작업 유형 | Trigger | Copilot CLI 역할 | 결과물 |
 | --- | --- | --- | --- |
@@ -182,7 +182,7 @@ Cloud agent와 유사한 경험을 만들려면 workflow를 작업 단위로 나
 | 배포 스크립트 리뷰 | `pull_request` | shell, Bicep, Terraform 변경 검토 | review checklist |
 | 문서 초안 생성 | `workflow_dispatch` | 변경사항 기반 release note 또는 운영 문서 초안 생성 | artifact, PR comment |
 
-중요한 점은 Copilot CLI가 “분석과 제안”을 수행하고, 실제 코드 반영이나 배포는 별도 승인 단계를 거치게 하는 것입니다. 이렇게 하면 cloud agent와 비슷한 자동화 경험을 만들면서도 내부통제와 감사 요구사항을 유지할 수 있습니다.
+중요한 점은 Copilot CLI가 “분석과 제안”을 수행하고, 실제 코드 반영이나 배포는 별도 승인 단계를 거치게 하는 것입니다. 이렇게 하면 Copilot Cloud Agent와 비슷한 자동화 경험을 만들면서도 내부통제와 감사 요구사항을 유지할 수 있습니다.
 
 ## <img src="../assets/images/haewonshin/github.svg" alt="GitHub" width="28" height="28" style="vertical-align:-5px;margin-right:8px;">Runner 운영 시 고려사항
 
@@ -196,18 +196,18 @@ GHES runner에서 Copilot CLI를 운영할 때는 다음 항목을 함께 검토
 - **모델 데이터 처리 기준**: 프롬프트와 응답 데이터가 어느 리전에서 처리되는지, 저장 여부와 보존 기간을 확인합니다.
 - **Runner 격리**: 프로젝트별 또는 민감도별 runner pool을 분리해 코드와 secret 접근 범위를 통제합니다.
 
-특히 cloud agent와 유사한 자동화로 발전시킬수록 runner 권한이 커질 수 있습니다. 따라서 “AI가 제안하고 사람이 승인한다”는 기본 흐름을 유지하는 것이 안전합니다.
+특히 에이전트 자동화로 발전시킬수록 runner 권한이 커질 수 있습니다. 따라서 “AI가 제안하고 사람이 승인한다”는 기본 흐름을 유지하는 것이 안전할 수 있습니다.
 
 ## <img src="../assets/images/haewonshin/github.svg" alt="GitHub" width="28" height="28" style="vertical-align:-5px;margin-right:8px;">마치며
 
-GHES self-hosted runner에서 Copilot CLI를 실행하면 managed cloud agent를 그대로 대체하지는 못하지만, 제한된 네트워크 환경에서도 AI 기반 분석과 제안 자동화를 구성할 수 있습니다. 핵심은 Copilot CLI를 독립적인 agent로 과대해석하기보다, GitHub Actions workflow 안에서 특정 작업을 수행하는 자동화 도구로 사용하는 것입니다.
+GHES self-hosted runner에서 Copilot CLI를 실행하면 Copilot Cloud Agent를 그대로 대체하지는 못하지만, 제한된 네트워크 환경에서도 AI 기반 분석과 제안 자동화를 구성할 수 있습니다. 핵심은 Copilot CLI를 독립적인 agent로 과대해석하기보다, GitHub Actions workflow 안에서 특정 작업을 수행하는 자동화 도구로 사용하는 것입니다.
 
 정리하면 다음과 같습니다.
 
 1. GHES runner는 내부망에서 실행되는 제어 가능한 자동화 실행 환경입니다.
 2. Copilot CLI는 runner 안에서 모델 호출과 자연어 기반 분석을 수행할 수 있습니다.
 3. Microsoft Foundry 또는 Azure OpenAI 모델을 직접 호출하려면 `COPILOT_PROVIDER_*` 환경변수와 인증 방식을 명확히 구성해야 합니다.
-4. Cloud agent와 유사한 경험은 workflow trigger, context 수집, Copilot CLI 실행, 결과 저장, 사람의 승인 단계를 조합해 만듭니다.
+4. Copilot Cloud Agent와 유사한 경험은 workflow trigger, context 수집, Copilot CLI 실행, 결과 저장, 사람의 승인 단계를 조합해 만듭니다.
 5. 보안, 감사, secret 관리, 네트워크 경로, 모델 데이터 처리 기준은 별도 운영 설계가 필요합니다.
 
 이 방식은 금융권이나 엔터프라이즈처럼 외부 managed agent 사용이 제한되는 환경에서, 내부 runner 기반으로 AI 개발 자동화를 점진적으로 검토하는 현실적인 출발점이 될 수 있습니다.
